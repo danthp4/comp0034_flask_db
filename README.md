@@ -1,2 +1,5 @@
 # comp0034_flask_db
-COMP0034 Completed example of the materials from the 'Flask and database integration' lecture
+
+The code in this repository is based on the previous lecture "Flask basics, Jinja2 and Forms". It builds on that code in include database interaction.
+
+
