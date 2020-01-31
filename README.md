@@ -10,31 +10,31 @@ The code in this repository is based on the previous lecture "Flask basics, Jinj
 ### Exercise 2: Create a page that displays all courses and the teacher
 1. Create a Jinja2 template. You can create your own or use the code below.
     ```
-    {% extends "base.html" %}
-    {% block title %}Courses{% endblock %}
-    {% block content %}
-    {% if courses|length %}
-    <table class="table">
-        <thead class="thead-dark">
-        <tr>
+    {% extends "base.html" %}
+    {% block title %}Courses{% endblock %}
+    {% block content %}
+    {% if courses|length %}
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Teacher</th>
         </tr>
         </thead>
-        <tbody>
-        {% for course in courses %}
-        <tr>
+        <tbody>
+        {% for course in courses %}
+        <tr>
             <td>{{ course.course_code }}</td>
             <td>{{ course.name }}</td>
             <td>{{ course.teacher_id }}</td>
         </tr>
-        {% endfor %}
+        {% endfor %}
         </tbody>
-    </table>
-    {% else %}
-    <p>Sorry, no courses are available at this time</p>
-    {% endif %}
+    </table>
+    {% else %}
+    <p>Sorry, no courses are available at this time</p>
+    {% endif %}
     {% endblock %}
     ```
 2. Add a route to `main/routes.py` e.g.
@@ -56,43 +56,44 @@ The code in this repository is based on the previous lecture "Flask basics, Jinj
 2. Add the form to the nav bar in the base template e.g.
     ```html
     <form class="form-inline my-2 my-lg-0" action="{{ url_for('main.search_results') }}" method="post" novalidate>     
-            {{ sform.hidden_tag() }}     
-            {{ sform.term(class="form-control mr-sm-2", placeholder='Search for student') }}     
-            <button type=submit class='btn btn-outline-success my-2 my-sm-0'>Search</button>   
-    </form>
+            {{ sform.hidden_tag() }}  
+            {{ sform.term(class="form-control mr-sm-2", placeholder='Search for student') }}
+            <button type=submit class='btn btn-outline-success my-2 my-sm-0'>Search</button>
+    </form>
     ```
 
 3. Add a search results template to present the results
     ```html
-    {% extends ”base.html" %}
-    {% block title %}Search results{% endblock %}
-    {% block content %}
-    {% if results|length %}
-    {# Variable is not empty #}
-    <table class="table">
-       <thead class="thead-dark">
+    {% extends ”base.html" %}
+    {% block title %}Search results{% endblock %}
+    {% block content %}
+    {% if results|length %}
+    {# Variable is not empty #}
+    <table class="table">
+       <thead class="thead-dark">
        <tr>
            <th scope="col">Student name</th>
            <th scope="col">Email</th>
        </tr>
        </thead>
-       <tbody> {% for result in results %}
-       <tr>
+       <tbody> 
+           {% for result in results %}
+       <tr>
            <td>{{ result.name }}</td>
            <td>{{ result.email }}</td>
        </tr>
-      {% endfor %}
+      {% endfor %}
        </tbody>
-    </table>
-    {% else %}
-    {# Variable is empty #}
-    <p>Sorry, no students found</p>
-    {% endif %}
+    </table>
+    {% else %}
+    {# Variable is empty #}
+    <p>Sorry, no students found</p>
+    {% endif %}
     {% endblock %}
     ```
 4. Create a route that takes the search term from the posted form, queries the database, and returns the results to the user using the search results template
     ```python
-    @bp_main.route('/results', methods=['POST', 'GET'])
+    @bp_main.route('/results', methods=['POST', 'GET'])
     def search_results():   
        form = UserSearchForm()
        if form.validate_on_submit():
@@ -121,40 +122,40 @@ SQLAlchemy will throw an error if we try to signup a student with the same email
 ### Exercise 5: Create custom error messages
 1. Create a base template (or use base.html)
     ```html
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
        <meta charset="UTF-8">
        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <title>{% block title %}{% endblock %}</title>
+        <title>{% block title %}{% endblock %}</title>
     </head>
-    <body>
-    <main role="main" class="container">
-       <br>
+    <body>
+    <main role="main" class="container">
+       <br>
        {% block content %}
-       {% endblock %}
-    </main>
+       {% endblock %}
+        </main>
     </body>
     </html>
     ```
 2. Create a custom 404.html 
     ```html
-   {% extends "layout_errors.html" %}
-   {% block title %}Not Found{% endblock %}
-   {% block content %}  
-   <h1>Not Found</h1>  
+   {% extends "layout_errors.html" %}
+   {% block title %}Not Found{% endblock %}
+   {% block content %}
+   <h1>Not Found</h1>
    <p>What you were looking for is just not there.<p>
-   <a href="{{ url_for('main.index') }}">Go back home</a>
+   <a href="{{ url_for('main.index') }}">Go back home</a>
    {% endblock %}
     ```
 3. Create a custom 500.html
     ```html
-   {% extends "layout_errors.html" %}
-   {% block title %}Internal server error{% endblock %}
-   {% block content %}  
-   <h1>Not Found</h1>  
+   {% extends "layout_errors.html" %}
+   {% block title %}Internal server error{% endblock %}
+   {% block content %}
+   <h1>Not Found</h1>
    <p>What you were looking for is just not there.</p>
    <p><a href="{{ url_for('main.index') }}">Go back home</a></p>
    {% endblock %}
@@ -171,8 +172,8 @@ SQLAlchemy will throw an error if we try to signup a student with the same email
        return render_template('404.html'), 404
    
    def create_app(config_class): 
-    ...    
-   # Register error handlers    
+    ... 
+   # Register error handlers
     app.register_error_handler(404, page_not_found)
     ...
     ```
