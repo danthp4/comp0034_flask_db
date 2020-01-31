@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %} Signup {% endblock %}
+{% block content %}
+<br>
+{# Display the form validation errors #}
+{% if form.errors %}
+    <p><strong>The form contains errors:</strong>
+    <ul>
+        {% for error in form.errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>{{ form.name.label }}<br>{{ form.name(size=32) }}</p>
+    <p>{{ form.email.label }}<br>{{ form.email(size=32) }}</p>
+    <p>{{ form.password.label }}<br>{{ form.password }}</p>
+    <p>{{ form.confirm.label }}<br>{{ form.confirm }}</p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}
