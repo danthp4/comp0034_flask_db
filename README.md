@@ -71,7 +71,7 @@ The code in this repository is based on the previous lecture "Flask basics, Jinj
     {# Variable is not empty #}
     <table class="table">
        <thead class="thead-dark">
-       <tr>
+       <tr>
            <th scope="col">Student name</th>
            <th scope="col">Email</th>
        </tr>
@@ -129,7 +129,7 @@ SQLAlchemy will throw an error if we try to signup a student with the same email
        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <title>{% block title %}{% endblock %}</title>
+        <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
     <main role="main" class="container">
