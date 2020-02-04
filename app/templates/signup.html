@@ -4,19 +4,22 @@
 <br>
 {# Display the form validation errors #}
 {% if form.errors %}
-    <p><strong>The form contains errors:</strong>
-    <ul>
-        {% for error in form.errors %}
-            <li>{{ error }}</li>
+    <ul class="alert-warning list-unstyled">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
         {% endfor %}
     </ul>
 {% endif %}
-<form action="" method="post" novalidate>
+{# Display the form, turn off HTML validation #}
+{# The (class_="") after a form field is used to apply css style to the element, in this case a bootstrap style #}
+<form method="post" novalidate>
     {{ form.hidden_tag() }}
-    <p>{{ form.name.label }}<br>{{ form.name(size=32) }}</p>
-    <p>{{ form.email.label }}<br>{{ form.email(size=32) }}</p>
-    <p>{{ form.password.label }}<br>{{ form.password }}</p>
-    <p>{{ form.confirm.label }}<br>{{ form.confirm }}</p>
-    <p>{{ form.submit() }}</p>
+    {{ form.name.label }}{{ form.name(class_="form-control") }}
+    {{ form.email.label }}{{ form.email(class_="form-control") }}
+    {{ form.password.label }}{{ form.password(class_="form-control") }}
+    {{ form.confirm.label }}{{ form.confirm(class_="form-control") }}
+    <br>{{ form.submit(class_="btn btn-primary") }}
 </form>
 {% endblock %}

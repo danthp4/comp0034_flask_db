@@ -1,9 +1,12 @@
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from app import db
 
 
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_ref = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.Text, nullable=False)
     email = db.Column(db.Text)
     password = db.Column(db.Text)
     grades = db.relationship('Grade', backref='students')
@@ -11,13 +14,18 @@ class Student(db.Model):
     def __repr__(self):
         return '<Student {}>'.format(self.student_id)
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 class Teacher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     teacher_ref = db.Column(db.Text, nullable=False)
     title = db.Column(db.Text)
-    first_name = db.Column(db.Text)
-    last_name = db.Column(db.Text)
+    name = db.Column(db.Text)
     courses = db.relationship('Course', backref='teachers')
 
     def __repr__(self):

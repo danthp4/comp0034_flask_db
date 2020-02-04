@@ -1,4 +1,4 @@
-from app import create_app, db
+from app import db
 from app.models import Student, Teacher, Course, Grade
 
 
@@ -9,19 +9,19 @@ def populate_db():
     """
 
     if not Student.query.first():
-        s1 = Student(student_ref="CS1234567", email='cs1234567@ucl.co.uk', password='test1pass')
-        s2 = Student(student_ref="CS1234568", email="cs1234568@ucl.co.uk", password="test2pass")
-        s3 = Student(student_ref="CS1234569", email="cs1234569@ucl.co.uk", password="test3pass")
-        s4 = Student(student_ref="CS1234570", email="cs1234570@ucl.co.uk", password="test4pass")
-        s5 = Student(student_ref="CS1234571", email="cs1234571@ucl.co.uk", password="test5pass")
-        s6 = Student(student_ref="CS1234572", email="cs1234572@ucl.co.uk", password="test6pass")
+        s1 = Student(student_ref="CS1234567", name="Ahmet Roth", email='cs1234567@ucl.co.uk', password='test1pass')
+        s2 = Student(student_ref="CS1234568", name="Elsie-Rose Kent", email="cs1234568@ucl.co.uk", password="test2pass")
+        s3 = Student(student_ref="CS1234569", name="Willem Bull", email="cs1234569@ucl.co.uk", password="test3pass")
+        s4 = Student(student_ref="CS1234570", name="Jago Curtis", email="cs1234570@ucl.co.uk", password="test4pass")
+        s5 = Student(student_ref="CS1234571", name="Mateusz Bauer", email="cs1234571@ucl.co.uk", password="test5pass")
+        s6 = Student(student_ref="CS1234572", name="Morwenna Shepherd", email="cs1234572@ucl.co.uk", password="test6pass")
 
-        t1 = Teacher(teacher_ref="uclcs0002", title="Dr", first_name="Lewis", last_name="Baird")
-        t2 = Teacher(teacher_ref="uclcs0006", title="Prof", first_name="Elif", last_name="Munro")
-        t3 = Teacher(teacher_ref="uclcs0010", title="Ms", first_name="Aleyna", last_name="Bonilla")
-        t4 = Teacher(teacher_ref="uclcs0072", title="Dr", first_name="Maximus", last_name="Tierney")
-        t5 = Teacher(teacher_ref="uclcs0021", title="Dr", first_name="Marcelina", last_name="Mcclure")
-        t6 = Teacher(teacher_ref="uclcs0132", title="Dr", first_name="Fei Hong", last_name="Zhou")
+        t1 = Teacher(teacher_ref="uclcs0002", title="Dr", name="Lewis Baird")
+        t2 = Teacher(teacher_ref="uclcs0006", title="Prof", name="Elif Munro")
+        t3 = Teacher(teacher_ref="uclcs0010", title="Ms", name="Aleyna Bonilla")
+        t4 = Teacher(teacher_ref="uclcs0072", title="Dr", name="Maximus Tierney")
+        t5 = Teacher(teacher_ref="uclcs0021", title="Dr", name="Marcelina McClure")
+        t6 = Teacher(teacher_ref="uclcs0132", title="Dr", name="Fei Hong Zhou")
 
         c1 = Course(course_code="COMP0015", name="Introduction to Programming")
         c2 = Course(course_code="COMP0034", name="Software Engineering")
@@ -81,8 +81,3 @@ def populate_db():
         db.session.add_all([s1, s2, s3, s4, s5, s6])
         db.session.add_all([t1, t2, t3, t4, t5, t6])
         db.session.commit()
-
-
-app = create_app()
-app.app_context().push()
-populate_db()

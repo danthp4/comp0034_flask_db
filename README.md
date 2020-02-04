@@ -1,6 +1,6 @@
 # comp0034_flask_db
 
-The code in this repository is based on the previous lecture "Flask basics, Jinja2 and Forms". It builds on that code in include database interaction.
+The starter code in this repository is based on the previous lecture "Flask basics, Jinja2 and Forms".
 
 ### Exercise 1: Configure the app to create the database and add sample data
 1. Open `models.py` and make sure you understand the structure of the classes. Do you know what the backref is used for?
@@ -9,7 +9,7 @@ The code in this repository is based on the previous lecture "Flask basics, Jinj
 
 ### Exercise 2: Create a page that displays all courses and the teacher
 1. Create a Jinja2 template. You can create your own or use the code below.
-    ```
+    ```jinja2
     {% extends "base.html" %}
     {% block title %}Courses{% endblock %}
     {% block content %}
@@ -17,7 +17,7 @@ The code in this repository is based on the previous lecture "Flask basics, Jinj
     <table class="table">
         <thead class="thead-dark">
         <tr>
-            <th scope="col">#</th>
+            <th scope="col">Code</th>
             <th scope="col">Name</th>
             <th scope="col">Teacher</th>
         </tr>
@@ -41,8 +41,8 @@ The code in this repository is based on the previous lecture "Flask basics, Jinj
     ```python
     @bp_main.route('/courses', methods=['GET'])
     def courses():
-       courses = Course.query.all()
-       return render_template("courses.html", courses=courses)
+       course_list = Course.query.all()
+       return render_template("courses.html", courses=course_list)
     ```
 3. Add a link to the nav bar in `base.html`. You should be able to follow the syntax of the other links to create this.
 4. Restart the Flask app and check the courses page.
@@ -119,61 +119,22 @@ SQLAlchemy will throw an error if we try to signup a student with the same email
 3. Create a new user, check that the user is in the database.
 4. Try to create another new user with the same details, you should get an error message
 ### Exercise 5: Create custom error messages
-1. Create a base template (or use base.html)
-    ```html
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-       <meta charset="UTF-8">
-       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <title>{% block title %}{% endblock %}</title>
-    </head>
-    <body>
-    <main role="main" class="container">
-       <br>
-       {% block content %}
-       {% endblock %}
-    </main>
-    </body>
-    </html>
-    ```
-2. Create a custom 404.html 
-    ```html
-   {% extends "layout_errors.html" %}
-   {% block title %}Not Found{% endblock %}
-   {% block content %}  
-   <h1>Not Found</h1>  
-   <p>What you were looking for is just not there.<p>
-   <a href="{{ url_for('main.index') }}">Go back home</a>
-   {% endblock %}
-    ```
-3. Create a custom 500.html
-    ```html
-   {% extends "layout_errors.html" %}
-   {% block title %}Internal server error{% endblock %}
-   {% block content %}  
-   <h1>Not Found</h1>  
-   <p>What you were looking for is just not there.</p>
-   <p><a href="{{ url_for('main.index') }}">Go back home</a></p>
-   {% endblock %}
-    ```
-4. Register the errors with the Blueprint in routes.py, e.g.
+1. In the templates folder you can see a parent template `base_errors.html` that doesn't have a nav bar, and two child templates for `404.html` and `500.html`.
+2. Register the 500 errors with the Blueprint in routes.py, e.g.
     ```python
    @bp_main.errorhandler(500)
    def page_not_found(e):
        return render_template("500.html"), 500
     ```
-5. Alternatively, you can register them when you create the app, e.g. in app/__init__py
-    ```python
-    def page_not_found(e): 
-       return render_template('404.html'), 404
-   
-   def create_app(config_class): 
-    ...    
-   # Register error handlers    
-    app.register_error_handler(404, page_not_found)
-    ...
-    ```
-   
+5. Register the 400 error when you create the app, e.g. in app/__init__py. 
+    1. Before the start of the create_app() function add the following:
+        ```python
+        def page_not_found(e): 
+           return render_template('404.html'), 404
+        ```
+    2. Within the `create_app()` function, e.g. just before registering the blueprints, register the error handlers:
+        ```python
+        # Register error handlers    
+           app.register_error_handler(404, page_not_found)
+        ```
+Note: you would usually apply the same method for both errors, this exercise is just so that you can see the alternative methods!
