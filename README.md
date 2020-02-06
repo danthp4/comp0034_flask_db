@@ -4,104 +4,48 @@ The starter code in this repository is based on the previous lecture "Flask basi
 
 ### Exercise 1: Configure the app to create the database and add sample data
 1. Open `models.py` and make sure you understand the structure of the classes. Do you know what the backref is used for?
-2. Open `app/__init__.py` and add a line to populate data in the database after the database tables have been created (db.create_all()). Do you remember where to place `import populate_db from populate_db`?
+2. Open `app/__init__.py` and add a line to populate data in the database after the database tables have been created i.e. after `db.create_all()`. Do you remember where to place `import populate_db from populate_db`?
 3. Run the Flask app using `run.py`
 
 ### Exercise 2: Create a page that displays all courses and the teacher
-1. Create a Jinja2 template. You can create your own or use the code below.
-    ```jinja2
-    {% extends "base.html" %}
-    {% block title %}Courses{% endblock %}
-    {% block content %}
-    {% if courses|length %}
-    <table class="table">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Code</th>
-            <th scope="col">Name</th>
-            <th scope="col">Teacher</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for course in courses %}
-        <tr>
-            <td>{{ course.course_code }}</td>
-            <td>{{ course.name }}</td>
-            <td>{{ course.teacher_id }}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>Sorry, no courses are available at this time</p>
-    {% endif %}
-    {% endblock %}
-    ```
-2. Add a route to `main/routes.py` e.g.
+1. Create a Jinja2 template. You can create your own or use `courses.html` in the templates folder.
+2. Add a route to `main/routes.py` that creates a variable which is the result of a database query of all courses and then passes the resulting data to the courses template to be rendered e.g.
     ```python
     @bp_main.route('/courses', methods=['GET'])
     def courses():
        course_list = Course.query.all()
        return render_template("courses.html", courses=course_list)
     ```
-3. Add a link to the nav bar in `base.html`. You should be able to follow the syntax of the other links to create this.
+3. Add a 'Courses' link to the nav bar in `base.html`. You should be able to follow the syntax of the other links to create this.
 4. Restart the Flask app and check the courses page.
 5. Modify the route so that the query generates the teacher's name rather than their id and modify the courses template to display the teacher name instead of the id.
 ### Exercise 3: Create a basic search function
-1. Create a form that allows users to enter a search term
-    ```python
-    class UserSearchForm(FlaskForm):
-       term = StringField('Search', validators=[DataRequired(), Length(min=2, max=60)])
-    ```
-2. Add the form to the nav bar in the base template e.g.
+You could do this a number of ways. You could create a form class as you did for sign up. However, since the search form is on the base template and appears on every page that inherits the base then it would mean passing a form parameter to each of those pages. You may be able to find a neat solution to this, the following avoids it by reverting to an HTML form instead. 
+1. Add a search results template to present the results (or use `search_results.html` in the templates folder)
+2. Add a search form to the navbar in the `base.html` template e.g.
     ```html
-    <form class="form-inline my-2 my-lg-0" action="{{ url_for('main.search_results') }}" method="post" novalidate>     
-            {{ sform.hidden_tag() }}     
-            {{ sform.term(class="form-control mr-sm-2", placeholder='Search for student') }}     
-            <button type=submit class='btn btn-outline-success my-2 my-sm-0'>Search</button>   
+    <form class="form-inline ml-auto" action="search" method="post">     
+            <input class="form-control" type="search" name="search_term" placeholder="Enter student name" aria-label="Search">
+            <button type=submit class='btn btn-primary btn-outline-light'>Search</button>   
     </form>
     ```
-
-3. Add a search results template to present the results
-    ```html
-    {% extends ”base.html" %}
-    {% block title %}Search results{% endblock %}
-    {% block content %}
-    {% if results|length %}
-    {# Variable is not empty #}
-    <table class="table">
-       <thead class="thead-dark">
-       <tr>
-           <th scope="col">Student name</th>
-           <th scope="col">Email</th>
-       </tr>
-       </thead>
-       <tbody> {% for result in results %}
-       <tr>
-           <td>{{ result.name }}</td>
-           <td>{{ result.email }}</td>
-       </tr>
-      {% endfor %}
-       </tbody>
-    </table>
-    {% else %}
-    {# Variable is empty #}
-    <p>Sorry, no students found</p>
-    {% endif %}
-    {% endblock %}
-    ```
-4. Create a route that takes the search term from the posted form, queries the database, and returns the results to the user using the search results template
+3. Create a route that takes the search term from the posted search form, queries the database, and renders the results to the user using the search results template
     ```python
-    @bp_main.route('/results', methods=['POST', 'GET'])
-    def search_results():   
-       form = UserSearchForm()
-       if form.validate_on_submit():
-           term = form.term.data
+   @bp_main.route('/search', methods=['POST', 'GET'])
+   def search():
+       if request.method == 'POST':
+           term = request.form['search_term']
+           if term == "":
+               flash("Enter a name to search for")
+               return redirect('/')
            results = Student.query.filter(Student.name.like('%' + term + '%')).all()
-           return render_template('search_results.html', results=results, sform=UserSearchForm())
-       flash('Please enter a search term between 2 and 60 characters')
-       return redirect(url_for('main.index', sform=UserSearchForm()))
-    ```
+           if not results:
+               flash("No students found with that name.")
+               return redirect('/')
+           return render_template('search_results.html', results=results)
+       else:
+           return redirect(url_for('main.index')) 
+   ```
 ### Exercise 4: Modify the signup form to save to the database
 1. Create methods to add and retrieve a hash of the password to the Student class in models.py
     ```python
