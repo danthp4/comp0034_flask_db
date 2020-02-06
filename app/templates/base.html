@@ -21,17 +21,19 @@
 </nav>
 <div role=main class="container">
     {# Displays flashed messages on a page #}
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
                 <li>{{ message }}</li>
-                {% endfor %}
+                {% endfor %}
             </ul>
-        {% endif %}
+        {% endif %}
     {% endwith %}
+
+    {% block content %}
     {# Child pages add page specific content here #}
-    {% block content %}{% endblock %}
+    {% endblock %}
 </div>
 </body>
 </html>
