@@ -24,10 +24,10 @@ You could do this a number of ways. You could create a form class as you did for
 1. Add a search results template to present the results (or use `search_results.html` in the templates folder)
 2. Add a search form to the navbar in the `base.html` template e.g.
     ```html
-    <form class="form-inline ml-auto" action="search" method="post">     
+    <form class="form-inline ml-auto" action="search" method="post">
             <input class="form-control" type="search" name="search_term" placeholder="Enter student name" aria-label="Search">
-            <button type=submit class='btn btn-primary btn-outline-light'>Search</button>   
-    </form>
+            <button type=submit class='btn btn-primary btn-outline-light'>Search</button>
+    </form>
     ```
 3. Create a route that takes the search term from the posted search form, queries the database, and renders the results to the user using the search results template
     ```python
@@ -67,10 +67,10 @@ To handle this gracefully use try / except when attempting to save a new student
                db.session.add(user)
                db.session.commit()
                flash('You are now a registered user!')
-           except IntegrityError as e:
+               return redirect(url_for('main.index'))
+           except IntegrityError:
                db.session.rollback()
-               flash('ERROR! Unable to register ({}) due to error ({}).'.format(form.email.data, e), 'error')
-           return redirect(url_for('main.index'))
+               flash('ERROR! Unable to register {}. Please check your details are correct and try again.'.format(form.name.data), 'error')
        return render_template('signup.html', form=form)
     ```
 3. Create a new user, check that the user is in the database.
@@ -91,7 +91,7 @@ To handle this gracefully use try / except when attempting to save a new student
         ```
     2. Within the `create_app()` function, e.g. just before registering the blueprints, register the error handlers:
         ```python
-        # Register error handlers    
+        # Register error handlers
            app.register_error_handler(404, page_not_found)
         ```
 Note: you would usually apply the same method for both errors, this exercise is just so that you can see the alternative methods!
