@@ -48,7 +48,7 @@ You could do this a number of ways. You could create a form class as you did for
            if term == "":
                flash("Enter a name to search for")
                return redirect('/')
-           results = Student.query.filter(Student.name.like('%' + term + '%')).all()
+           results = Student.query.filter(Student.name.contains(term)).all()
            if not results:
                flash("No students found with that name.")
                return redirect('/')
