@@ -47,18 +47,31 @@ You could do this a number of ways. You could create a form class as you did for
            return redirect(url_for('main.index')) 
    ```
 ### Exercise 4: Modify the signup form to save to the database
-1. Create methods to add and retrieve a hash of the password to the Student class in models.py
+1. Store the password as a hashed value rather than plain text. Create methods to add and retrieve a hash of the password to the Student class in models.py
     ```python
    def set_password(self, password):
-       self.password_hash = generate_password_hash(password)
+       self.password = generate_password_hash(password)
 
    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.password, password)
     ```
-2. Modify the route to save the new student to the database.
-SQLAlchemy will throw an error if we try to signup a student with the same email address. To handle this gracefully use try / except when registering a new user.
+2. Modify the signup route so that it tries to save the new student to the database. Note: forms.py already has a new method added to check that the student_ref is unique.
+To handle this gracefully use try / except when attempting to save a new student to  the database.
     ```python
-    
+    def signup():
+       form = SignupForm(request.form)
+       if request.method == 'POST' and form.validate():
+           user = Student(name=form.name.data, email=form.email.data, student_ref=form.student_ref.data)
+           user.set_password(form.password.data)
+           try:
+               db.session.add(user)
+               db.session.commit()
+               flash('You are now a registered user!')
+           except IntegrityError as e:
+               db.session.rollback()
+               flash('ERROR! Unable to register ({}) due to error ({}).'.format(form.email.data, e), 'error')
+           return redirect(url_for('main.index'))
+       return render_template('signup.html', form=form)
     ```
 3. Create a new user, check that the user is in the database.
 4. Try to create another new user with the same details, you should get an error message

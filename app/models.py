@@ -5,7 +5,7 @@ from app import db
 
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    student_ref = db.Column(db.Integer, nullable=False)
+    student_ref = db.Column(db.Integer, nullable=False, unique=True)
     name = db.Column(db.Text, nullable=False)
     email = db.Column(db.Text)
     password = db.Column(db.Text)
