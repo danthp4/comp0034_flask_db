@@ -9,7 +9,11 @@ The starter code in this repository is based on the previous lecture "Flask basi
 
 ### Exercise 2: Create a page that displays all courses and the teacher
 1. Create a Jinja2 template. You can create your own or use `courses.html` in the templates folder.
-2. Add a route to `main/routes.py` that creates a variable which is the result of a database query of all courses and then passes the resulting data to the courses template to be rendered e.g.
+2. Add a route to `main/routes.py`. The route should:
+    - creates a variable which is the result of a database query of all courses
+    - passes the variable to the courses template to be rendered 
+   
+   e.g.
     ```python
     @bp_main.route('/courses', methods=['GET'])
     def courses():
@@ -19,6 +23,12 @@ The starter code in this repository is based on the previous lecture "Flask basi
 3. Add a 'Courses' link to the nav bar in `base.html`. You should be able to follow the syntax of the other links to create this.
 4. Restart the Flask app and check the courses page.
 5. Modify the route so that the query generates the teacher's name rather than their id and modify the courses template to display the teacher name instead of the id.
+
+    You will need to use a 'join' e.g. `courses = Course.query.join(Teacher).all()`. 
+    However, there is an issue with this join as there is a duplicate column name (‘name’ is in both tables). To overcome this, specify the attributes to include the results using `.withentities()` and give the ‘name’ column in teacher a different name e.g. `Teacher.name.label('teacher_name')`. A revised query might look like this:
+
+    `courses = Course.query.join(Teacher).with_entities(Course.course_code, Course.name, Teacher.name.label('teacher_name')).all()`.
+
 ### Exercise 3: Create a basic search function
 You could do this a number of ways. You could create a form class as you did for sign up. However, since the search form is on the base template and appears on every page that inherits the base then it would mean passing a form parameter to each of those pages. You may be able to find a neat solution to this, the following avoids it by reverting to an HTML form instead. 
 1. Add a search results template to present the results (or use `search_results.html` in the templates folder)
@@ -73,8 +83,8 @@ To handle this gracefully use try / except when attempting to save a new student
                flash('ERROR! Unable to register {}. Please check your details are correct and try again.'.format(form.name.data), 'error')
        return render_template('signup.html', form=form)
     ```
-3. Create a new user, check that the user is in the database.
-4. Try to create another new user with the same details, you should get an error message
+3. Use signup to create a new student. Check that the user is in the database.
+4. Try to create another new student with the same student ID, you should get an error message.
 ### Exercise 5: Create custom error messages
 1. In the templates folder you can see a parent template `base_errors.html` that doesn't have a nav bar, and two child templates for `404.html` and `500.html`.
 2. Register the 500 errors with the Blueprint in routes.py, e.g.
