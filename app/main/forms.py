@@ -8,6 +8,7 @@ from app.models import Student
 class SignupForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email address', validators=[DataRequired(), Email(message='Valid email address required')])
+    student_ref = StringField('Student ID', validators=[DataRequired(message='Please provide your student ID number')])
     password = PasswordField('Password',
                              validators=[DataRequired(), EqualTo('confirm', message='Passwords must match')])
     confirm = PasswordField('Repeat Password')

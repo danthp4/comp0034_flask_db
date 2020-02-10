@@ -13,13 +13,14 @@
     </ul>
 {% endif %}
 {# Display the form, turn off HTML validation #}
-{# The (class_="") after a form field is used to apply css style to the element, in this case a bootstrap style #}
+{# The (class="") after a form field is used to apply css style to the element, in this case a bootstrap style #}
 <form method="post" novalidate>
     {{ form.hidden_tag() }}
-    {{ form.name.label }}{{ form.name(class_="form-control") }}
-    {{ form.email.label }}{{ form.email(class_="form-control") }}
-    {{ form.password.label }}{{ form.password(class_="form-control") }}
-    {{ form.confirm.label }}{{ form.confirm(class_="form-control") }}
+    {{ form.name.label }}{{ form.name(class="form-control") }}
+    {{ form.email.label }}{{ form.email(class="form-control") }}
+    {{ form.student_ref.label }}{{ form.student_ref(class="form-control") }}
+    {{ form.password.label }}{{ form.password(class="form-control") }}
+    {{ form.confirm.label }}{{ form.confirm(class="form-control") }}
     <br>{{ form.submit(class_="btn btn-primary") }}
 </form>
 {% endblock %}
