@@ -7,11 +7,11 @@ The starter code in this repository is based on the previous lecture "Flask basi
 2. Open `app/__init__.py` and add a line to populate data in the database after the database tables have been created i.e. after `db.create_all()`. Do you remember where to place `import populate_db from populate_db`?
 3. Run the Flask app using `run.py`
 
-### Exercise 2: Create a page that displays all courses and the teacher
+### Exercise 2: Create a page that displays all courses and the teacher for each course
 1. Create a Jinja2 template. You can create your own or use `courses.html` in the templates folder.
 2. Add a route to `main/routes.py`. The route should:
-    - creates a variable which is the result of a database query of all courses
-    - passes the variable to the courses template to be rendered 
+    - create a variable whose value is the result of a database query of all courses
+    - pass the variable to the courses template to be rendered 
    
    e.g.
     ```python
